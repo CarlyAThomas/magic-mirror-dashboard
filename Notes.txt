@@ -1,0 +1,64 @@
+Set Up a Virtual Environment and Activate It
+python -m venv venv
+source venv/bin/activate
+
+Upgrade pip if needed
+(venv) pip install --upgrade pip
+Install project Requirements
+(venv) pip install requests sqlite3 dotenv
+
+Sqlite3 is built into Python's standard library and requests and dotenv (from python-dotenv) are external libraries
+(venv) pip install requests python-dotenv
+Check SQLite3 version
+(venv) python -c "import sqlite3; print(sqlite3.sqlite_version)"
+(venv) pip install requests
+
+Generate a requirements.txt file
+(venv) pip install -r requirements.txt 
+(venv) pip freeze > requirements.txt
+
+Setting up the database
+
+(venv) touch infotracking.db
+Set up the database schema
+(venv) touch schema.sql
+Initialize the database
+(venv) touch init_db.py
+(venv) python init_db.py
+
+
+Store the Data in SQLite (Recommended for building the full project)
+Create a database and table for weather data
+(venv) sqlite3 weather.db
+Save the retrieved weather info into the table
+CREATE TABLE weather (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    city TEXT,
+    temperature REAL,
+    humidity INTEGER,
+    description TEXT,
+    datetime TEXT DEFAULT CURRENT_TIMESTAMP
+);
+.exit
+Query the data later for display on your Magic Mirror
+
+
+Format and Display the Data (Good for testing & visualization)
+Clean up the JSON response
+Extract useful details like temperature, humidity, and conditions
+Print a user-friendly weather summary
+
+Automate It (Long-term feature)
+Installing cronjobs
+sudo apt update && sudo apt install cron -y
+sudo service cron start
+sudo service cron status
+
+Set up a cron job to fetch and update data at regular intervals
+crontab -e
+
+Limit API Calls: Since hourly and daily forecasts are unavailable, we should only fetch data every 3 hours to align with OpenWeather's 5-day / 3-hour forecast.
+0 */3 * * * /usr/bin/python3 /workspaces/magic-mirror-dashboard/weather.py
+
+Ensure fresh weather data is always available
+Edit weather.py file for a cleanup function that will run in addition to the main script that will limit stored information to 1 year.
